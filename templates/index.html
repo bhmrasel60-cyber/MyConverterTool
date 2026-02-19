@@ -3,309 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amar Tools Dashboard</title>
+    <title>My Universal Toolset</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* Clean Light Slate */
-            /* High-end ultra-clean white premium background */
-            background-image: radial-gradient(circle at top right, rgba(255, 255, 255, 0.8), transparent 60%),
-                              radial-gradient(circle at bottom left, rgba(241, 245, 249, 0.9), transparent 60%),
-                              url('https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?q=80&w=2500&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-blend-mode: overlay;
-            color: #0f172a;
-            overflow-x: hidden;
-        }
-
-        /* Background Animated Blobs for Light Theme */
-        .blob {
-            position: absolute;
-            filter: blur(80px);
-            z-index: -1;
-            opacity: 0.5;
-            animation: moveBlob 15s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .blob-1 { top: -5%; left: -5%; width: 500px; height: 500px; background: #dbeafe; } /* Light Blue */
-        .blob-2 { top: 50%; right: -5%; width: 450px; height: 450px; background: #f3e8ff; } /* Light Purple */
-        .blob-3 { bottom: -10%; left: 20%; width: 600px; height: 600px; background: #e0e7ff; } /* Light Indigo */
-
-        @keyframes moveBlob {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(50px, 80px) scale(1.05); }
-            100% { transform: translate(-30px, -50px) scale(0.95); }
-        }
-
-        /* Sleek, Professional Light Glassmorphism */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 1);
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.06);
-            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        .glass-card:hover {
-            transform: translateY(-8px);
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid rgba(99, 102, 241, 0.3); /* Subtle Indigo Border */
-            box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.12), 0 0 20px rgba(255, 255, 255, 0.5);
-        }
-
-        /* Notice Section Styling - Light Mode */
-        .notice-bar {
-            background: rgba(255, 255, 255, 0.85);
-            border: 1px solid rgba(226, 232, 240, 1);
-            border-radius: 100px;
-            max-width: 800px;
-            margin: 0 auto;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            padding: 8px 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            backdrop-filter: blur(12px);
-        }
-
-        .notice-title {
-            background: #4f46e5;
-            color: #ffffff;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            padding: 4px 12px;
-            border-radius: 50px;
-            margin-right: 15px;
-            white-space: nowrap;
-            letter-spacing: 0.5px;
-            box-shadow: 0 0 10px rgba(79, 70, 229, 0.3);
-        }
-
-        .notice-content {
-            flex-grow: 1;
-            font-size: 14px;
-            font-weight: 600;
-            color: #475569;
-            white-space: nowrap;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .scrolling-text {
-            display: inline-block;
-            animation: scroll 25s linear infinite;
-            padding-left: 100%;
-        }
-
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
-
-        /* Animations */
-        .animate-fade-up {
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes fadeUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .delay-100 { animation-delay: 100ms; }
-        .delay-200 { animation-delay: 200ms; }
-        .delay-300 { animation-delay: 300ms; }
-        .delay-400 { animation-delay: 400ms; }
-        .delay-500 { animation-delay: 500ms; }
-
-        /* Minimalist Gradient Text for Light Theme */
-        .gradient-text {
-            background: linear-gradient(135deg, #0f172a, #4338ca, #2563eb);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        /* Minimalist Icon Box - Light */
-        .icon-box {
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; }
+        .tool-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            transition: all 0.3s;
             border: 1px solid #e2e8f0;
-            transition: all 0.4s ease;
         }
-
-        .glass-card:hover .icon-box {
-            background: linear-gradient(135deg, #6366f1, #3b82f6);
-            border-color: transparent;
-            transform: scale(1.08) rotate(-5deg);
-            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+        .tool-card:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            border-color: #3b82f6; 
         }
-
-        .glass-card:hover .icon-box i {
-            color: #ffffff !important;
+        .btn-action {
+            background: #2563eb; color: white; padding: 10px;
+            border-radius: 8px; width: 100%; margin-top: 15px;
+            font-weight: 600; transition: background 0.2s;
+            cursor: pointer; border: none;
         }
-        
-        .floating { animation: float 6s ease-in-out infinite; }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
+        .btn-action:hover { background: #1d4ed8; }
+        .icon-box {
+            width: 45px; height: 45px; display: flex;
+            align-items: center; justify-content: center;
+            border-radius: 10px; margin-bottom: 15px; font-size: 22px;
         }
+        input { width: 100%; border: 1px solid #cbd5e1; padding: 8px; border-radius: 6px; }
     </style>
 </head>
-<body class="flex flex-col min-h-screen selection:bg-indigo-200 selection:text-indigo-900 relative">
+<body class="p-6 md:p-10">
+    <div class="max-w-6xl mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-3xl font-extrabold text-slate-800">My Universal Toolset</h1>
+            <p class="text-slate-500 mt-2">All-in-One Online Converter</p>
+        </header>
 
-    <!-- Background Animated Blobs -->
-    <div class="blob blob-1 rounded-full"></div>
-    <div class="blob blob-2 rounded-full"></div>
-    <div class="blob blob-3 rounded-full"></div>
-
-    <!-- Header Section -->
-    <header class="pt-24 pb-12 text-center px-4 relative z-10 floating animate-fade-up">
-        
-        <!-- Welcome Badge -->
-        <div class="mb-8 inline-block">
-            <div class="flex items-center gap-3 py-1.5 px-5 rounded-full bg-white/80 backdrop-blur-md border border-slate-200 shadow-sm text-xs font-bold tracking-widest text-indigo-700 uppercase transition hover:shadow-md hover:border-indigo-300">
-                <span class="relative flex h-2 w-2">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-                </span>
-                <span>Workspace Active</span>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <div class="tool-card border-t-4 border-orange-500">
+                <div class="icon-box bg-orange-100 text-orange-600">🖼️</div>
+                <h3 class="text-lg font-bold text-slate-800">PDF to Image</h3>
+                <p class="text-slate-500 text-sm mb-3">Convert PDF pages to PNG images.</p>
+                <form action="/pdf-to-img" method="post" enctype="multipart/form-data">
+                    <input type="file" name="pdf_file" accept=".pdf" required class="text-sm">
+                    <button type="submit" class="btn-action bg-orange-600">Convert to PNG</button>
+                </form>
             </div>
-        </div>
 
-        <h1 class="text-5xl md:text-7xl font-extrabold mb-5 gradient-text tracking-tight pb-2">
-            Web Tools Suite
-        </h1>
-        <p class="text-slate-500 text-lg md:text-xl max-w-2xl mx-auto font-medium leading-relaxed mb-10">
-            Professional grade utilities designed for seamless productivity.<br>All essential tools, unified in one secure interface.
-        </p>
-
-        <!-- LIVE NOTICE SECTION -->
-        <div class="notice-bar animate-fade-up delay-100">
-            <span class="notice-title">Update</span>
-            <div class="notice-content">
-                <div class="scrolling-text">
-                    <i class="fa-solid fa-satellite-dish text-indigo-500 mr-2"></i> 
-                    System Online: All tools are running at optimal capacity. &nbsp;&bull;&nbsp; 
-                    <span class="text-indigo-600 font-bold">Security:</span> Remember to export your encrypted PDF backups daily. &nbsp;&bull;&nbsp; 
-                    <span class="text-emerald-600 font-bold">Feature:</span> 2026 Ramadan Module is now fully integrated. &nbsp;&bull;&nbsp; 
-                    Designed and engineered by Rasel Mia.
-                </div>
+            <div class="tool-card border-t-4 border-red-500">
+                <div class="icon-box bg-red-100 text-red-600">✂️</div>
+                <h3 class="text-lg font-bold text-slate-800">Split PDF</h3>
+                <p class="text-slate-500 text-sm mb-3">Extract specific pages from a PDF.</p>
+                <form action="/split-pdf" method="post" enctype="multipart/form-data">
+                    <input type="file" name="pdf_file" accept=".pdf" required class="mb-2 text-sm">
+                    <div class="flex gap-2">
+                        <input type="number" name="start" placeholder="Start" required min="1" class="w-1/2">
+                        <input type="number" name="end" placeholder="End" required min="1" class="w-1/2">
+                    </div>
+                    <button type="submit" class="btn-action bg-red-600">Extract Pages</button>
+                </form>
             </div>
-        </div>
-    </header>
 
-    <!-- Main Grid Section -->
-    <main class="flex-grow container mx-auto px-4 py-8 pb-24 relative z-10">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-
-            <!-- Card 1: Diary -->
-            <a href="diary.html" class="glass-card rounded-2xl p-7 group cursor-pointer block relative overflow-hidden animate-fade-up delay-100">
-                <div class="flex items-center justify-between mb-6 relative z-10">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-xl icon-box shadow-sm">
-                        <i class="fa-solid fa-book-open text-xl text-slate-600 transition-colors"></i>
-                    </div>
-                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-white py-1.5 px-3 rounded-full border border-slate-200 shadow-sm">Personal</span>
-                </div>
-                <h3 class="text-xl font-bold mb-2 text-slate-800 group-hover:text-indigo-600 transition-colors">Professional Diary</h3>
-                <p class="text-slate-500 text-sm leading-relaxed font-medium">Encrypted daily journal. Track tasks, log thoughts, and preserve records securely.</p>
-            </a>
-
-            <!-- Card 2: Docx View -->
-            <a href="docx view.html" class="glass-card rounded-2xl p-7 group cursor-pointer block relative overflow-hidden animate-fade-up delay-200">
-                <div class="flex items-center justify-between mb-6 relative z-10">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-xl icon-box shadow-sm">
-                        <i class="fa-solid fa-file-word text-xl text-slate-600 transition-colors"></i>
-                    </div>
-                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-white py-1.5 px-3 rounded-full border border-slate-200 shadow-sm">Document</span>
-                </div>
-                <h3 class="text-xl font-bold mb-2 text-slate-800 group-hover:text-blue-600 transition-colors">Docx Viewer</h3>
-                <p class="text-slate-500 text-sm leading-relaxed font-medium">Native browser rendering for Microsoft Word documents. Fast and secure.</p>
-            </a>
-
-            <!-- Card 3: HTML Preview -->
-            <a href="html preview.html" class="glass-card rounded-2xl p-7 group cursor-pointer block relative overflow-hidden animate-fade-up delay-300">
-                <div class="flex items-center justify-between mb-6 relative z-10">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-xl icon-box shadow-sm">
-                        <i class="fa-brands fa-html5 text-xl text-slate-600 transition-colors"></i>
-                    </div>
-                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-white py-1.5 px-3 rounded-full border border-slate-200 shadow-sm">Developer</span>
-                </div>
-                <h3 class="text-xl font-bold mb-2 text-slate-800 group-hover:text-orange-500 transition-colors">Code Workspace</h3>
-                <p class="text-slate-500 text-sm leading-relaxed font-medium">Live IDE environment. Write, debug, and execute HTML/CSS/JS components.</p>
-            </a>
-
-            <!-- Card 4: Converter -->
-            <a href="my converter.html" class="glass-card rounded-2xl p-7 group cursor-pointer block relative overflow-hidden animate-fade-up delay-400">
-                <div class="flex items-center justify-between mb-6 relative z-10">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-xl icon-box shadow-sm">
-                        <i class="fa-solid fa-arrows-rotate text-xl text-slate-600 transition-colors"></i>
-                    </div>
-                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-white py-1.5 px-3 rounded-full border border-slate-200 shadow-sm">Utility</span>
-                </div>
-                <h3 class="text-xl font-bold mb-2 text-slate-800 group-hover:text-emerald-500 transition-colors">Universal Converter</h3>
-                <p class="text-slate-500 text-sm leading-relaxed font-medium">Precision tools for format conversion, unit calculation, and data parsing.</p>
-            </a>
-
-            <!-- Card 5: Photo Viewer -->
-            <a href="photo viewer.html" class="glass-card rounded-2xl p-7 group cursor-pointer block relative overflow-hidden animate-fade-up delay-500">
-                <div class="flex items-center justify-between mb-6 relative z-10">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-xl icon-box shadow-sm">
-                        <i class="fa-solid fa-images text-xl text-slate-600 transition-colors"></i>
-                    </div>
-                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-white py-1.5 px-3 rounded-full border border-slate-200 shadow-sm">Media</span>
-                </div>
-                <h3 class="text-xl font-bold mb-2 text-slate-800 group-hover:text-purple-500 transition-colors">Media Gallery</h3>
-                <p class="text-slate-500 text-sm leading-relaxed font-medium">High-performance image viewer. Organize and inspect your visual assets.</p>
-            </a>
-
-            <!-- Card 6: Sound Generator -->
-            <a href="sound generator.html" class="glass-card rounded-2xl p-7 group cursor-pointer block relative overflow-hidden animate-fade-up delay-500">
-                <div class="flex items-center justify-between mb-6 relative z-10">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-xl icon-box shadow-sm">
-                        <i class="fa-solid fa-wave-square text-xl text-slate-600 transition-colors"></i>
-                    </div>
-                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-white py-1.5 px-3 rounded-full border border-slate-200 shadow-sm">Audio</span>
-                </div>
-                <h3 class="text-xl font-bold mb-2 text-slate-800 group-hover:text-rose-500 transition-colors">Audio Synthesizer</h3>
-                <p class="text-slate-500 text-sm leading-relaxed font-medium">Advanced frequency generation and sound wave manipulation engine.</p>
-            </a>
-
-        </div>
-    </main>
-
-    <!-- Footer Section -->
-    <footer class="py-8 mt-auto bg-white/70 backdrop-blur-xl border-t border-slate-200 shadow-[0_-5px_15px_rgba(0,0,0,0.02)] relative z-10 animate-fade-up delay-500">
-        <div class="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6 max-w-6xl">
-            
-            <p class="text-slate-500 text-sm font-medium tracking-wide">
-                &copy; 2024 Web Tools Suite.
-            </p>
-            
-            <!-- Developer Badge Section -->
-            <div class="flex items-center gap-3">
-                <span class="text-slate-400 text-xs tracking-widest uppercase font-bold">Engineered by</span>
-                
-                <div class="flex items-center gap-2 bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-indigo-300 rounded-full pl-1.5 pr-4 py-1.5 transition-all cursor-default">
-                    <img src="my_image.jpg" alt="Developer Rasel" class="w-7 h-7 rounded-full object-cover border border-slate-200">
-                    <span class="text-slate-700 font-bold text-sm tracking-wide">Rasel Mia</span>
-                </div>
+            <div class="tool-card border-t-4 border-yellow-500">
+                <div class="icon-box bg-yellow-100 text-yellow-600">📱</div>
+                <h3 class="text-lg font-bold text-slate-800">QR Code Maker</h3>
+                <p class="text-slate-500 text-sm mb-3">Turn text or links into QR Code.</p>
+                <form action="/generate-qr" method="post">
+                    <input type="text" name="qr_text" placeholder="Enter Link or Text..." required>
+                    <button type="submit" class="btn-action bg-yellow-600">Generate QR</button>
+                </form>
             </div>
-            
-            <!-- Contact Info -->
-            <a href="tel:01566054963" class="flex items-center gap-2 text-slate-500 hover:text-indigo-600 transition-colors text-sm font-bold tracking-wide bg-white/50 px-4 py-2 rounded-full border border-transparent hover:border-indigo-100">
-                <i class="fa-solid fa-phone text-xs"></i> 01566054963
-            </a>
-            
-        </div>
-    </footer>
 
+            <div class="tool-card border-t-4 border-blue-500">
+                <div class="icon-box bg-blue-100 text-blue-600">👤</div>
+                <h3 class="text-lg font-bold text-slate-800">Job Photo</h3>
+                <p class="text-slate-500 text-sm mb-3">300x300 px | JPEG</p>
+                <form action="/convert-job-photo" method="post" enctype="multipart/form-data">
+                    <input type="file" name="image" accept="image/*" required class="text-sm">
+                    <button type="submit" class="btn-action bg-blue-600">Convert Photo</button>
+                </form>
+            </div>
+
+            <div class="tool-card border-t-4 border-indigo-500">
+                <div class="icon-box bg-indigo-100 text-indigo-600">✍️</div>
+                <h3 class="text-lg font-bold text-slate-800">Signature</h3>
+                <p class="text-slate-500 text-sm mb-3">300x80 px | JPEG</p>
+                <form action="/convert-signature" method="post" enctype="multipart/form-data">
+                    <input type="file" name="image" accept="image/*" required class="text-sm">
+                    <button type="submit" class="btn-action bg-indigo-600">Convert Sign</button>
+                </form>
+            </div>
+
+            <div class="tool-card border-t-4 border-gray-500">
+                <div class="icon-box bg-gray-100 text-gray-600">📚</div>
+                <h3 class="text-lg font-bold text-slate-800">PDF Merger</h3>
+                <p class="text-slate-500 text-sm mb-3">Combine multiple PDFs.</p>
+                <form action="/merge-pdf" method="post" enctype="multipart/form-data">
+                    <input type="file" name="files" multiple accept=".pdf" required class="text-sm">
+                    <button type="submit" class="btn-action bg-gray-600">Merge Files</button>
+                </form>
+            </div>
+
+            <div class="tool-card border-t-4 border-green-500">
+                <div class="icon-box bg-green-100 text-green-600">🖼️</div>
+                <h3 class="text-lg font-bold text-slate-800">Image to PDF</h3>
+                <p class="text-slate-500 text-sm mb-3">Images to single PDF.</p>
+                <form action="/img-to-pdf" method="post" enctype="multipart/form-data">
+                    <input type="file" name="images" multiple accept="image/*" required class="text-sm">
+                    <button type="submit" class="btn-action bg-green-600">Create PDF</button>
+                </form>
+            </div>
+
+            <div class="tool-card border-t-4 border-purple-500">
+                <div class="icon-box bg-purple-100 text-purple-600">📝</div>
+                <h3 class="text-lg font-bold text-slate-800">PDF to Text</h3>
+                <p class="text-slate-500 text-sm mb-3">Extract text from PDF.</p>
+                <form action="/pdf-to-text" method="post" enctype="multipart/form-data">
+                    <input type="file" name="pdf_file" accept=".pdf" required class="text-sm">
+                    <button type="submit" class="btn-action bg-purple-600">Get Text</button>
+                </form>
+            </div>
+
+            <div class="tool-card border-t-4 border-pink-500">
+                <div class="icon-box bg-pink-100 text-pink-600">🎨</div>
+                <h3 class="text-lg font-bold text-slate-800">JPG to PNG</h3>
+                <p class="text-slate-500 text-sm mb-3">Convert JPG to PNG format.</p>
+                <form action="/jpg-to-png" method="post" enctype="multipart/form-data">
+                    <input type="file" name="image" accept="image/*" required class="text-sm">
+                    <button type="submit" class="btn-action bg-pink-600">Convert PNG</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
 </body>
 </html>
