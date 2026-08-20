@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Universal Toolset</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
     <style>
         body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; }
         .tool-card {
@@ -32,7 +33,70 @@
             align-items: center; justify-content: center;
             border-radius: 10px; margin-bottom: 15px; font-size: 22px;
         }
-        input { width: 100%; border: 1px solid #cbd5e1; padding: 8px; border-radius: 6px; }
+        input[type="file"], input[type="text"], input[type="number"] {
+            width: 100%; border: 1px solid #cbd5e1; padding: 8px; border-radius: 6px;
+        }
+
+        /* QR Scanner Styles */
+        #qr-modal {
+            display: none;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        #qr-modal.active { display: flex; }
+        #qr-video-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 3px solid #22c55e;
+            box-shadow: 0 0 0 4px rgba(34,197,94,0.3);
+        }
+        #qr-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #scan-line {
+            position: absolute;
+            left: 0; top: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, transparent, #22c55e, transparent);
+            animation: scan 2s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        #qr-canvas { display: none; }
+        #qr-result-box {
+            margin-top: 16px;
+            background: white;
+            border-radius: 12px;
+            padding: 14px 20px;
+            max-width: 320px;
+            width: 100%;
+            text-align: center;
+            display: none;
+        }
+        #qr-result-box.active { display: block; }
+        #corner-tl, #corner-tr, #corner-bl, #corner-br {
+            position: absolute;
+            width: 24px; height: 24px;
+            border-color: #22c55e;
+            border-style: solid;
+        }
+        #corner-tl { top: 8px; left: 8px; border-width: 3px 0 0 3px; border-radius: 4px 0 0 0; }
+        #corner-tr { top: 8px; right: 8px; border-width: 3px 3px 0 0; border-radius: 0 4px 0 0; }
+        #corner-bl { bottom: 8px; left: 8px; border-width: 0 0 3px 3px; border-radius: 0 0 0 4px; }
+        #corner-br { bottom: 8px; right: 8px; border-width: 0 3px 3px 0; border-radius: 0 0 4px 0; }
     </style>
 </head>
 <body class="p-6 md:p-10">
@@ -76,6 +140,32 @@
                     <input type="text" name="qr_text" placeholder="Enter Link or Text..." required>
                     <button type="submit" class="btn-action bg-yellow-600">Generate QR</button>
                 </form>
+            </div>
+
+            <!-- ✅ NEW: QR Code Scanner Card -->
+            <div class="tool-card border-t-4 border-teal-500">
+                <div class="icon-box bg-teal-100 text-teal-600">📷</div>
+                <h3 class="text-lg font-bold text-slate-800">QR Code Scanner</h3>
+                <p class="text-slate-500 text-sm mb-3">Scan QR code using camera or image file.</p>
+
+                <!-- Live Camera Button -->
+                <button onclick="openCameraScanner()" class="btn-action bg-teal-600" style="margin-top: 8px;">
+                    📷 Live Camera Scanner
+                </button>
+
+                <!-- Upload Image to Scan -->
+                <div style="margin-top: 10px;">
+                    <label class="text-xs text-slate-500 font-semibold block mb-1">Or upload QR image:</label>
+                    <input type="file" id="qr-upload" accept="image/*" class="text-sm" onchange="scanFromImage(event)">
+                </div>
+
+                <!-- Result shown here -->
+                <div id="scan-result-card" style="display:none; margin-top: 12px; background:#f0fdf4; border:1px solid #86efac; border-radius:8px; padding:10px;">
+                    <p class="text-xs text-green-700 font-bold mb-1">✅ QR Decoded:</p>
+                    <p id="scan-result-text" class="text-sm text-slate-800 break-all"></p>
+                    <button onclick="copyResult()" style="margin-top:8px; background:#16a34a; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:12px; cursor:pointer;">📋 Copy</button>
+                    <a id="scan-result-link" href="#" target="_blank" style="display:none; margin-left:8px; background:#2563eb; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:12px; text-decoration:none;">🔗 Open Link</a>
+                </div>
             </div>
 
             <div class="tool-card border-t-4 border-blue-500">
@@ -140,5 +230,168 @@
 
         </div>
     </div>
+
+    <!-- ✅ LIVE CAMERA QR SCANNER MODAL -->
+    <div id="qr-modal">
+        <p style="color:white; font-size:18px; font-weight:700; margin-bottom:16px;">📷 Live QR Scanner</p>
+        <div id="qr-video-container">
+            <video id="qr-video" autoplay playsinline muted></video>
+            <div id="scan-line"></div>
+            <div id="corner-tl"></div>
+            <div id="corner-tr"></div>
+            <div id="corner-bl"></div>
+            <div id="corner-br"></div>
+        </div>
+        <canvas id="qr-canvas"></canvas>
+        
+        <div id="qr-result-box">
+            <p style="font-size:12px; color:#16a34a; font-weight:700; margin-bottom:4px;">✅ QR Code Found!</p>
+            <p id="qr-modal-result" style="font-size:14px; color:#1e293b; word-break:break-all;"></p>
+            <div style="display:flex; gap:8px; margin-top:10px; justify-content:center; flex-wrap:wrap;">
+                <button onclick="copyModalResult()" style="background:#16a34a; color:white; border:none; padding:7px 14px; border-radius:6px; font-size:13px; cursor:pointer;">📋 Copy</button>
+                <a id="modal-open-link" href="#" target="_blank" style="display:none; background:#2563eb; color:white; padding:7px 14px; border-radius:6px; font-size:13px; text-decoration:none;">🔗 Open</a>
+                <button onclick="resumeScan()" style="background:#f59e0b; color:white; border:none; padding:7px 14px; border-radius:6px; font-size:13px; cursor:pointer;">🔄 Scan Again</button>
+            </div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; justify-content:center;">
+            <button onclick="switchCamera()" style="background:#475569; color:white; border:none; padding:10px 20px; border-radius:8px; font-size:14px; cursor:pointer;">🔄 Switch Camera</button>
+            <button onclick="closeCameraScanner()" style="background:#ef4444; color:white; border:none; padding:10px 20px; border-radius:8px; font-size:14px; cursor:pointer;">✖ Close</button>
+        </div>
+        <p id="camera-status" style="color:#94a3b8; font-size:13px; margin-top:12px;">Starting camera...</p>
+    </div>
+
+    <script>
+        // ========== CAMERA SCANNER ==========
+        let videoStream = null;
+        let scanInterval = null;
+        let currentFacingMode = 'environment'; // back camera first
+        let scanning = true;
+
+        async function openCameraScanner() {
+            document.getElementById('qr-modal').classList.add('active');
+            document.getElementById('qr-result-box').classList.remove('active');
+            scanning = true;
+            await startCamera();
+        }
+
+        async function startCamera() {
+            const statusEl = document.getElementById('camera-status');
+            statusEl.textContent = 'Starting camera...';
+            if (videoStream) {
+                videoStream.getTracks().forEach(t => t.stop());
+            }
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: currentFacingMode, width: { ideal: 640 }, height: { ideal: 640 } }
+                });
+                const video = document.getElementById('qr-video');
+                video.srcObject = videoStream;
+                video.play();
+                statusEl.textContent = '🟢 Camera active — point at a QR code';
+                if (scanInterval) clearInterval(scanInterval);
+                scanInterval = setInterval(scanFrame, 200);
+            } catch (err) {
+                statusEl.textContent = '❌ Camera error: ' + err.message;
+            }
+        }
+
+        function scanFrame() {
+            if (!scanning) return;
+            const video = document.getElementById('qr-video');
+            const canvas = document.getElementById('qr-canvas');
+            if (video.readyState !== video.HAVE_ENOUGH_DATA) return;
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
+            if (code && code.data) {
+                scanning = false;
+                showModalResult(code.data);
+            }
+        }
+
+        function showModalResult(text) {
+            const resultBox = document.getElementById('qr-result-box');
+            document.getElementById('qr-modal-result').textContent = text;
+            const linkEl = document.getElementById('modal-open-link');
+            if (text.startsWith('http://') || text.startsWith('https://')) {
+                linkEl.href = text;
+                linkEl.style.display = 'inline-block';
+            } else {
+                linkEl.style.display = 'none';
+            }
+            resultBox.classList.add('active');
+            document.getElementById('camera-status').textContent = '✅ QR Code scanned!';
+        }
+
+        function resumeScan() {
+            document.getElementById('qr-result-box').classList.remove('active');
+            document.getElementById('camera-status').textContent = '🟢 Ready — point at a QR code';
+            scanning = true;
+        }
+
+        function closeCameraScanner() {
+            document.getElementById('qr-modal').classList.remove('active');
+            if (videoStream) videoStream.getTracks().forEach(t => t.stop());
+            if (scanInterval) clearInterval(scanInterval);
+            videoStream = null;
+        }
+
+        function switchCamera() {
+            currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+            startCamera();
+        }
+
+        function copyModalResult() {
+            const text = document.getElementById('qr-modal-result').textContent;
+            navigator.clipboard.writeText(text).then(() => alert('Copied!'));
+        }
+
+        // ========== UPLOAD IMAGE SCAN ==========
+        function scanFromImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, imageData.width, imageData.height);
+                    const resultCard = document.getElementById('scan-result-card');
+                    const resultText = document.getElementById('scan-result-text');
+                    const resultLink = document.getElementById('scan-result-link');
+                    if (code && code.data) {
+                        resultText.textContent = code.data;
+                        resultCard.style.display = 'block';
+                        if (code.data.startsWith('http://') || code.data.startsWith('https://')) {
+                            resultLink.href = code.data;
+                            resultLink.style.display = 'inline-block';
+                        } else {
+                            resultLink.style.display = 'none';
+                        }
+                    } else {
+                        resultText.textContent = '❌ No QR code found in this image.';
+                        resultCard.style.display = 'block';
+                        resultLink.style.display = 'none';
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function copyResult() {
+            const text = document.getElementById('scan-result-text').textContent;
+            navigator.clipboard.writeText(text).then(() => alert('Copied!'));
+        }
+    </script>
 </body>
 </html>
